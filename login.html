@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Page</title>
+    <link rel="stylesheet" href="style1.css">
+  </head>
+  <body>
+    <div class="container">
+      <h1>Login Page</h1>
+      <form id="loginForm">
+        <div>
+          <label>Username</label>
+          <input type="text" name="username" id="loginUsername" />
+        </div>
+        <div>
+          <label>Password</label>
+          <input type="password" name="password" id="loginPassword" />
+        </div>
+        <button type="submit">Login</button>
+      </form>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const loginForm = document.getElementById("loginForm");
+
+        loginForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const username = document.getElementById("loginUsername").value;
+          const password = document.getElementById("loginPassword").value;
+
+          const storedData = JSON.parse(localStorage.getItem("formData"));
+          if (
+            storedData &&
+            storedData.username === username &&
+            storedData.password === password
+          ) {
+            window.location.href = "/user.html";
+          } else {
+            alert("Invalid username or password");
+          }
+        });
+      });
+
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault();
+          const api = "https://signup-backend-ashen.vercel.app/v1/auth/login";
+
+          const formData = {
+            firstName: document.getElementById("firstName").value,
+            lastName: document.getElementById("lastName").value,
+            email: document.getElementById("email").value,
+          };
+
+          try {
+            const response = await fetch("/api/users", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(formData),
+            });
+
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log("User created successfully:", result);
+          
+          } catch (error) {
+            console.error("Error creating user:", error);
+              
+          }
+        });
+    </script>
+  </body>
+</html>
